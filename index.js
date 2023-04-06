@@ -251,7 +251,7 @@ bot.on("text", async (request) => {
 
         case '/deposit':
           if (accessLevel >= 4) {
-            if (args.length === 2) {
+            if (args.length === 2 && !isNaN(args[1])) {
               const currentUsername = args[0]
               const userRecords = await getUsers(['username', [currentUsername]])
 
@@ -292,7 +292,7 @@ bot.on("text", async (request) => {
 
         case '/cashOut':
           if (accessLevel >= 4) {
-            if (args.length === 2) {
+            if (args.length === 2 && !isNaN(args[1])) {
 
               const records = await getUsers(['username', [args[0], 'profit']])
 
