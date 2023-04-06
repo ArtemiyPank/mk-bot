@@ -1,8 +1,8 @@
 FROM node:16
 
-WORKDIR /mkbot
+WORKDIR .
 
-COPY . /mkbot
+COPY . .
 
 RUN npm install
 

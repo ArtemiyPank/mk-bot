@@ -9,3 +9,5 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
+    volumes:
+      - /mk-bot_bd:/mk-bot_bd

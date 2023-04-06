@@ -6,6 +6,7 @@
     "dotenv": "^16.0.3",
     "js-big-decimal": "^1.4.1",
     "node-telegram-bot-api": "^0.61.0",
+    "sqlite3": "^5.1.6",
     "telegraf": "^4.12.2",
     "unique-username-generator": "^1.1.3"
   }
