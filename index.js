@@ -1,12 +1,12 @@
 const dotenv = require("dotenv")
-const {Telegraf} = require("telegraf")
+const TelegramBot = require("node-telegram-bot-api")
 const {generateUsername} = require("unique-username-generator")
 const BigDecimal = require("js-big-decimal")
 const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database('./mk-bot_db/mk-bot_db.sqlite')
 
 dotenv.config()
-const bot = new Telegraf(process.env.BOT_TOKEN)
+const bot = new TelegramBot(process.env.BOT_TOKEN, {polling: true})
 
 const rules = `
 1 = 0.1
@@ -54,15 +54,14 @@ async function getUsers(parameters = []) {
 }
 
 
-bot.on("text", async (request) => {
+bot.on("message", async (msg) => {
   try {
-    if (request.message) {
+    if (msg.chat) {
       let {
         chat: {
           id: sendersID, username: sendersUsername
         }, text
-      } = request.message
-
+      } = msg
       const command = text.split(' ')[0]
       let args = []
       if (text.split(' ').length > 1) {
@@ -338,6 +337,9 @@ bot.on("text", async (request) => {
           }
           break
 
+        case '/pizda':
+          break
+
         default:
           message = 'Нихуя не понял.\n' + rules
           messages.push([sendersID, message])
@@ -345,7 +347,7 @@ bot.on("text", async (request) => {
       }
 
       for (let [id, message] of messages) {
-        await bot.telegram.sendMessage(id, message, {
+        await bot.sendMessage(id, message, {
           parse_mode: 'Markdown'
         })
       }
@@ -357,8 +359,8 @@ bot.on("text", async (request) => {
   }
 })
 
-bot.launch().then()
-
-// Enable graceful stop
-process.once("SIGINT", () => bot.stop("SIGINT"))
-process.once("SIGTERM", () => bot.stop("SIGTERM"))
+// bot.launch().then()
+//
+// // Enable graceful stop
+// process.once("SIGINT", () => bot.stop("SIGINT"))
+// process.once("SIGTERM", () => bot.stop("SIGTERM"))
