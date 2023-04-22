@@ -62,7 +62,6 @@ bot.on("message", async (msg) => {
           id: sendersID,
           username: sendersUsername
         },
-        message_id: messageId,
         text
       } = msg
 
@@ -112,10 +111,6 @@ bot.on("message", async (msg) => {
 
       let messages = []
       let message
-
-
-      // запись id сообщения
-      db.run('UPDATE users SET lastMessageId = ? WHERE id = ?', [messageId + 1, sendersID])
 
       switch (command) {
         case '/start':
