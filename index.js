@@ -59,9 +59,14 @@ bot.on("message", async (msg) => {
     if (msg.chat) {
       let {
         chat: {
-          id: sendersID, username: sendersUsername
-        }, text
+          id: sendersID,
+          username: sendersUsername
+        },
+        message_id: messageId,
+        text
       } = msg
+
+
       const command = text.split(' ')[0]
       let args = []
       if (text.split(' ').length > 1) {
@@ -80,7 +85,12 @@ bot.on("message", async (msg) => {
       8 - full access
       */
 
-      const admins = [['865114970', 8, 'Artemiy', 30], ['705440585', 4, 'Nikita', 15], ['708382963', 4, 'Yriy', 15], ['930912808', 3, 'Andrey', 15], ['1080883134', 2, 'Ilya', 5], // ['5739959347', 1, 'Test', 0]
+      const admins = [
+        ['865114970', 8, 'Artemiy', 45],
+        ['708382963', 4, 'Yriy', 35],
+        ['1080883134', 4, 'Ilya', 20],
+        ['705440585', 1, 'Nikita', 0],
+        // ['5739959347', 1, 'Test', 0]
       ]
 
       let accessLevel = 0
@@ -103,6 +113,10 @@ bot.on("message", async (msg) => {
       let messages = []
       let message
 
+
+      // запись id сообщения
+      db.run('UPDATE users SET lastMessageId = ? WHERE id = ?', [messageId + 1, sendersID])
+
       switch (command) {
         case '/start':
           if (sendersRecords.length === 0) {
@@ -120,9 +134,7 @@ bot.on("message", async (msg) => {
 
             // Данные нового пользователя
             const newUser = {
-              username: sendersUsername,
-              balance: '0',
-              id: sendersID,
+              username: sendersUsername, balance: '0', id: sendersID,
             }
 
             // Вставляем нового пользователя в таблицу users
@@ -263,7 +275,6 @@ bot.on("message", async (msg) => {
 
                 // подсчёт и запись нового баланса
                 const newBalance = BigDecimal.add(currentUserBalance, balanceChanging)
-
                 db.run('UPDATE users SET balance = ? WHERE id = ?', [newBalance, currentUserId])
 
                 //уведомление админа
@@ -337,9 +348,6 @@ bot.on("message", async (msg) => {
           }
           break
 
-        case '/pizda':
-          break
-
         default:
           message = 'Нихуя не понял.\n' + rules
           messages.push([sendersID, message])
@@ -359,8 +367,3 @@ bot.on("message", async (msg) => {
   }
 })
 
-// bot.launch().then()
-//
-// // Enable graceful stop
-// process.once("SIGINT", () => bot.stop("SIGINT"))
-// process.once("SIGTERM", () => bot.stop("SIGTERM"))
