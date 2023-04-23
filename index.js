@@ -66,11 +66,38 @@ bot.on("message", async (msg) => {
       } = msg
 
 
+      let messages = []
+      let message
+
+
       const command = text.split(' ')[0]
       let args = []
       if (text.split(' ').length > 1) {
         args = text.split(' ').slice(1)
       }
+
+      const specialChars = /[\W_]/; // регулярное выражение для поиска всех специальных символов
+      let isIncorrectString = false
+      for (const arg of args) {
+        if (specialChars.test(arg)) {
+          isIncorrectString = true
+
+          message = `Использование спецсимволов запрещено`
+          messages.push([sendersID, message])
+
+          console.log('There is special chars in message');
+        }
+        if (arg.length > 25) {
+          isIncorrectString = true
+
+          message = `Максимальная длина аргумента - 25 символов`
+          messages.push([sendersID, message])
+
+          console.log('Argument is too long');
+        }
+      }
+
+      if(!isIncorrectString) {
 
 
       /*
@@ -88,9 +115,10 @@ bot.on("message", async (msg) => {
         ['865114970', 8, 'Artemiy', 45],
         ['708382963', 4, 'Yriy', 35],
         ['1080883134', 4, 'Ilya', 20],
-        ['705440585', 1, 'Nikita', 0],
+        ['705440585', 0, 'Nikita', 0],
         // ['5739959347', 1, 'Test', 0]
       ]
+
 
       let accessLevel = 0
       for (const admin of admins) {
@@ -108,9 +136,6 @@ bot.on("message", async (msg) => {
       }
 
       console.log(sendersID, accessLevel, sendersUsername, text)
-
-      let messages = []
-      let message
 
       switch (command) {
         case '/start':
@@ -218,7 +243,7 @@ bot.on("message", async (msg) => {
             const profit = balances[0]['id'].toString() === '1' ? balances[0] : balances[1]
             const user = balances[0]['id'].toString() === sendersID.toString() ? balances[0] : balances[1]
 
-            if (accessLevel === 0) {
+            if (accessLevel < 2) {
               message = `Ваш баланс: ${user['balance']}`
             } else {
               message = `Баланс пользователя ${currentUsername}: ${user['balance']} \nПрофит кружка: ${profit['balance']}`
@@ -347,7 +372,7 @@ bot.on("message", async (msg) => {
           message = 'Нихуя не понял.\n' + rules
           messages.push([sendersID, message])
           break
-      }
+      }}
 
       for (let [id, message] of messages) {
         await bot.sendMessage(id, message, {

@@ -3,6 +3,7 @@ version: '3.3'
 services:
   web:
     container_name: "mk-bot"
+    image: mk-bot
     restart: unless-stopped
     build:
       context: .
@@ -10,4 +11,7 @@ services:
     env_file:
       - .env
     volumes:
-      - /mk-bot_bd:/mk-bot_bd
+      - users-db:/mk-bot_bd
+volumes:
+  users-db:
+    external: true # нужн создать volume в ручную командой sudo docker volume create --name users-db
