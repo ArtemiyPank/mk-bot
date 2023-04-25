@@ -76,7 +76,7 @@ bot.on("message", async (msg) => {
         args = text.split(' ').slice(1)
       }
 
-      const specialChars = /[\W_]/; // регулярное выражение для поиска всех специальных символов
+      const specialChars = /[!@#$%^&*()+\=\[\]{};`':"\\|,<>\/?]+/ // регулярное выражение для поиска всех специальных символов кроме - _ .
       let isIncorrectString = false
       for (const arg of args) {
         if (specialChars.test(arg)) {
